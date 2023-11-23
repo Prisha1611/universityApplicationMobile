@@ -51,7 +51,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+                lecturerloginButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(getApplicationContext(),LecturerHome.class);
+                        startActivity(intent);
+                    }
+                });
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
