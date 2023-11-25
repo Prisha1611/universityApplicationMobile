@@ -1,121 +1,3 @@
-////package com.example.project;
-////
-////import android.view.LayoutInflater;
-////import android.view.View;
-////import android.view.ViewGroup;
-////import android.widget.EditText;
-////import android.widget.TextView;
-////import androidx.annotation.NonNull;
-////import androidx.recyclerview.widget.RecyclerView;
-////import java.util.List;
-////
-////public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
-////    private List<String> courseList;
-////
-////    public CourseAdapter(List<String> courseList) {
-////        this.courseList = courseList;
-////    }
-////
-////    @NonNull
-////    @Override
-////    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-////        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
-////        return new CourseViewHolder(view);
-////    }
-////
-////    @Override
-////    public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
-////        String course = courseList.get(position);
-////        holder.bind(course);
-////    }
-////
-////    @Override
-////    public int getItemCount() {
-////        return courseList.size();
-////    }
-////
-////    public class CourseViewHolder extends RecyclerView.ViewHolder {
-////        private TextView courseNameTextView;
-////
-////        public CourseViewHolder(@NonNull View itemView) {
-////            super(itemView);
-////            courseNameTextView = itemView.findViewById(R.id.courseNameTextView);
-////        }
-////
-////        public void bind(String course) {
-////            courseNameTextView.setText(course);
-////        }
-////    }
-////
-////}
-//
-//package com.example.project;
-//
-//import android.view.LayoutInflater;
-//import android.view.View;
-//import android.view.ViewGroup;
-//import android.widget.Button;
-//import android.widget.EditText;
-//import android.widget.TextView;
-//import androidx.annotation.NonNull;
-//import androidx.recyclerview.widget.RecyclerView;
-//import java.util.List;
-//
-//public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
-//    private List<String> courseList;
-//    private DBHelper dbHelper;
-//
-//
-//    public CourseAdapter(List<String> courseList) {
-//        this.courseList = courseList;
-//        this.dbHelper = dbHelper;
-//    }
-//
-//    @NonNull
-//    @Override
-//    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
-//        return new CourseViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
-//        String course = courseList.get(position);
-//        holder.courseNameTextView.setText(course);
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return courseList.size();
-//    }
-//
-//    public static class CourseViewHolder extends RecyclerView.ViewHolder {
-//        TextView courseNameTextView;
-//        EditText courseGradeEditText;// EditText for grade entry
-//        Button addGradeButton;
-//
-//        public CourseViewHolder(View itemView) {
-//            super(itemView);
-//            studentIdTextView = itemView.findViewById(R.id.studentIdTextView);
-//            courseNameTextView = itemView.findViewById(R.id.courseNameTextView);
-//            courseGradeEditText = itemView.findViewById(R.id.courseGradeEditText);
-//            addGradeButton = itemView.findViewById(R.id.addGradeButton);
-//
-//            addGradeButton.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    int position = getAdapterPosition();
-//                    if (position != RecyclerView.NO_POSITION) {
-//                        Course course = courseList.get(position);
-//                        String grade = courseGradeEditText.getText().toString();
-//                        dbHelper.insertGrade(course.getStudentId(), course.getCourseName(), grade);
-//                    }
-//                }
-//            });
-//        }
-//    }
-//}
-
 package com.example.project;
 
 import android.content.ContentValues;
@@ -215,12 +97,12 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<StudentCourse> getStudentCourses() {
+    public List<StudentCourse> getStudentCourses(int studentUsername) {
         List<StudentCourse> studentCourses = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Query to retrieve student ID and course names
-        Cursor cursor = db.rawQuery("SELECT studentId, courseName FROM " + TABLE_COURSES, null);
+        Cursor cursor = db.rawQuery("SELECT studentId, courseName FROM " + TABLE_COURSES + " WHERE studentId = ?", new String[]{String.valueOf(studentUsername)});
 
         while (cursor.moveToNext()) {
             int studentId = cursor.getInt(cursor.getColumnIndexOrThrow("studentId"));
@@ -233,6 +115,8 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return studentCourses;
     }
+
+
 
 
     public void insertGrade(int studentId, String courseName, String grade) {
