@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:gravity="center_vertical">
+
+    <TextView
+        android:id="@+id/studentIdTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:layout_marginEnd="16dp"/>
+
+    <TextView
+        android:id="@+id/courseNameTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingEnd="16dp"/>
+    <!-- Assuming you already have TextViews for courseName and studentId -->
+    <EditText
+        android:id="@+id/courseGradeEditText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Enter grade"
+        android:inputType="text" />
+
+
+    <!--    <EditText-->
+<!--        android:id="@+id/courseGradeEditText"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Grade"-->
+<!--        android:inputType="numberDecimal"-->
+<!--        android:textAlignment="center"-->
+<!--        android:background="@drawable/edittext_background" />-->
+
+<!--    <Button-->
+<!--        android:id="@+id/addGradeButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Add Grade" />-->
+</LinearLayout>
