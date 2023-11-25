@@ -13,6 +13,17 @@
         android:theme="@style/Theme.Project"
         tools:targetApi="34">
         <activity
+            android:name=".LecturerDashboard"
+            android:exported="false" />
+        <activity
+            android:name=".Lecturer"
+            android:exported="false"
+            android:label="@string/title_activity_lecturer"
+            android:theme="@style/Theme.Project" />
+        <activity
+            android:name=".studentGrades"
+            android:exported="false" />
+        <activity
             android:name=".signUp"
             android:exported="false" />
         <activity

@@ -1,3 +1,121 @@
+////package com.example.project;
+////
+////import android.view.LayoutInflater;
+////import android.view.View;
+////import android.view.ViewGroup;
+////import android.widget.EditText;
+////import android.widget.TextView;
+////import androidx.annotation.NonNull;
+////import androidx.recyclerview.widget.RecyclerView;
+////import java.util.List;
+////
+////public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
+////    private List<String> courseList;
+////
+////    public CourseAdapter(List<String> courseList) {
+////        this.courseList = courseList;
+////    }
+////
+////    @NonNull
+////    @Override
+////    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+////        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
+////        return new CourseViewHolder(view);
+////    }
+////
+////    @Override
+////    public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
+////        String course = courseList.get(position);
+////        holder.bind(course);
+////    }
+////
+////    @Override
+////    public int getItemCount() {
+////        return courseList.size();
+////    }
+////
+////    public class CourseViewHolder extends RecyclerView.ViewHolder {
+////        private TextView courseNameTextView;
+////
+////        public CourseViewHolder(@NonNull View itemView) {
+////            super(itemView);
+////            courseNameTextView = itemView.findViewById(R.id.courseNameTextView);
+////        }
+////
+////        public void bind(String course) {
+////            courseNameTextView.setText(course);
+////        }
+////    }
+////
+////}
+//
+//package com.example.project;
+//
+//import android.view.LayoutInflater;
+//import android.view.View;
+//import android.view.ViewGroup;
+//import android.widget.Button;
+//import android.widget.EditText;
+//import android.widget.TextView;
+//import androidx.annotation.NonNull;
+//import androidx.recyclerview.widget.RecyclerView;
+//import java.util.List;
+//
+//public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseViewHolder> {
+//    private List<String> courseList;
+//    private DBHelper dbHelper;
+//
+//
+//    public CourseAdapter(List<String> courseList) {
+//        this.courseList = courseList;
+//        this.dbHelper = dbHelper;
+//    }
+//
+//    @NonNull
+//    @Override
+//    public CourseViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+//        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_course, parent, false);
+//        return new CourseViewHolder(view);
+//    }
+//
+//    @Override
+//    public void onBindViewHolder(@NonNull CourseViewHolder holder, int position) {
+//        String course = courseList.get(position);
+//        holder.courseNameTextView.setText(course);
+//    }
+//
+//    @Override
+//    public int getItemCount() {
+//        return courseList.size();
+//    }
+//
+//    public static class CourseViewHolder extends RecyclerView.ViewHolder {
+//        TextView courseNameTextView;
+//        EditText courseGradeEditText;// EditText for grade entry
+//        Button addGradeButton;
+//
+//        public CourseViewHolder(View itemView) {
+//            super(itemView);
+//            studentIdTextView = itemView.findViewById(R.id.studentIdTextView);
+//            courseNameTextView = itemView.findViewById(R.id.courseNameTextView);
+//            courseGradeEditText = itemView.findViewById(R.id.courseGradeEditText);
+//            addGradeButton = itemView.findViewById(R.id.addGradeButton);
+//
+//            addGradeButton.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    int position = getAdapterPosition();
+//                    if (position != RecyclerView.NO_POSITION) {
+//                        Course course = courseList.get(position);
+//                        String grade = courseGradeEditText.getText().toString();
+//                        dbHelper.insertGrade(course.getStudentId(), course.getCourseName(), grade);
+//                    }
+//                }
+//            });
+//        }
+//    }
+//}
+
 package com.example.project;
 
 import android.content.ContentValues;
@@ -6,7 +124,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +131,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TABLE_USERDETAILS = "Userdetails";
     private static final String TABLE_COURSES = "Courses";
+    private static final String TABLE_GRADES = "Grades"; // New table for grades
 
     public DBHelper(Context context) {
         super(context, "Userdata.db", null, 1);
@@ -22,13 +140,16 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase DB) {
         DB.execSQL("CREATE TABLE " + TABLE_USERDETAILS + "(username INTEGER PRIMARY KEY, password TEXT)");
-        DB.execSQL("CREATE TABLE " + TABLE_COURSES + "(courseId INTEGER PRIMARY KEY AUTOINCREMENT, studentId INTEGER, courseName TEXT, UNIQUE(studentId, courseName))");
+        DB.execSQL("CREATE TABLE " + TABLE_COURSES + "(courseId INTEGER PRIMARY KEY AUTOINCREMENT, studentId INTEGER, courseName VARCHAR(255), UNIQUE(studentId, courseName))");
+        // Create the Grades table
+        DB.execSQL("CREATE TABLE " + TABLE_GRADES + "(gradeId INTEGER PRIMARY KEY AUTOINCREMENT, studentId INTEGER, courseName VARCHAR(255), grade VARCHAR(10), UNIQUE(studentId, courseName))");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase DB, int oldVersion, int newVersion) {
-        DB.execSQL("DROP TABLE IF EXISTS Userdetails");
+        DB.execSQL("DROP TABLE IF EXISTS " + TABLE_USERDETAILS);
         DB.execSQL("DROP TABLE IF EXISTS " + TABLE_COURSES);
+        DB.execSQL("DROP TABLE IF EXISTS " + TABLE_GRADES); // Drop the Grades table
         onCreate(DB);
     }
 
@@ -64,20 +185,63 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-
-    // Method to retrieve all courses
     public Cursor getAllCourses() {
         SQLiteDatabase DB = this.getReadableDatabase();
         return DB.rawQuery("SELECT * FROM " + TABLE_COURSES, null);
     }
+
     public boolean checkUserCredentials(int username, String password) {
         SQLiteDatabase DB = this.getReadableDatabase();
-        Cursor cursor = DB.rawQuery("SELECT * FROM Userdetails WHERE username = ? AND password = ?",
-                new String[]{String.valueOf(username), password});
+        Cursor cursor = DB.rawQuery("SELECT * FROM Userdetails WHERE username = ? AND password = ?", new String[]{String.valueOf(username), password});
         boolean exists = cursor.getCount() > 0;
         cursor.close();
         DB.close();
         return exists;
     }
 
+    public int getStudentIdByUsername(int username) {
+        SQLiteDatabase DB = this.getReadableDatabase();
+        Cursor cursor = DB.rawQuery("SELECT studentId FROM " + TABLE_USERDETAILS + " WHERE username = ?", new String[]{String.valueOf(username)});
+        int studentId = -1; // Default value if the username is not found
+
+        if (cursor.moveToFirst()) {
+            studentId = cursor.getInt(0); // Get the integer value directly
+        }
+
+        cursor.close();
+        DB.close();
+
+        return studentId;
+    }
+
+
+    public List<StudentCourse> getStudentCourses() {
+        List<StudentCourse> studentCourses = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        // Query to retrieve student ID and course names
+        Cursor cursor = db.rawQuery("SELECT studentId, courseName FROM " + TABLE_COURSES, null);
+
+        while (cursor.moveToNext()) {
+            int studentId = cursor.getInt(cursor.getColumnIndexOrThrow("studentId"));
+            String courseName = cursor.getString(cursor.getColumnIndexOrThrow("courseName"));
+            studentCourses.add(new StudentCourse(studentId, courseName));
+        }
+
+        cursor.close();
+        db.close();
+
+        return studentCourses;
+    }
+
+
+    public void insertGrade(int studentId, String courseName, String grade) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("studentId", studentId);
+        contentValues.put("courseName", courseName);
+        contentValues.put("grade", grade);
+        db.insertOrThrow(TABLE_GRADES, null, contentValues); // Insert into the Grades table
+        db.close();
+    }
 }

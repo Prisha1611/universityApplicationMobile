@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         studentloginButton = findViewById(R.id.studentloginButton);
         lecturerloginButton = findViewById(R.id.lecturerloginButton);
         signupbutton = findViewById(R.id.signupButton);
-        adminloginButton = findViewById(R.id.adminloginButton);
+//        adminloginButton = findViewById(R.id.adminloginButton);
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
 
@@ -51,13 +51,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-                lecturerloginButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(getApplicationContext(),LecturerHome.class);
-                        startActivity(intent);
-                    }
-                });
+        lecturerloginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), LecturerDashboard.class);
+                startActivity(intent);
+            }
+        });
         signupbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
