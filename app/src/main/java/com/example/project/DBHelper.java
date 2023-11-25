@@ -116,16 +116,47 @@ public class DBHelper extends SQLiteOpenHelper {
         return studentCourses;
     }
 
+//    public boolean insertGrade(int studentId, String courseName, String grade) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues contentValues = new ContentValues();
+//        contentValues.put("studentId", studentId);
+//        contentValues.put("courseName", courseName);
+//        contentValues.put("grade", grade);
+//        try {
+//            long result = db.insertOrThrow(TABLE_GRADES, null, contentValues);
+//            return result != -1;
+//        } catch (Exception e) {
+//            Log.e("DBHelper", "Error inserting grade: " + e.getMessage(), e);
+//            return false;
+//        } finally {
+//            db.close();
+//        }
+//    }
+public boolean insertOrUpdateGrade(int studentId, String courseName, String grade) {
+    SQLiteDatabase db = this.getWritableDatabase();
+    ContentValues contentValues = new ContentValues();
+    contentValues.put("studentId", studentId);
+    contentValues.put("courseName", courseName);
+    contentValues.put("grade", grade);
 
+    String whereClause = "studentId = ? AND courseName = ?";
+    String[] whereArgs = new String[] { String.valueOf(studentId), courseName };
 
-
-    public void insertGrade(int studentId, String courseName, String grade) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("studentId", studentId);
-        contentValues.put("courseName", courseName);
-        contentValues.put("grade", grade);
-        db.insertOrThrow(TABLE_GRADES, null, contentValues); // Insert into the Grades table
-        db.close();
+    int updatedRows = db.update(TABLE_GRADES, contentValues, whereClause, whereArgs);
+    if (updatedRows == 0) {
+        // No existing record, so insert a new one
+        try {
+            long result = db.insertOrThrow(TABLE_GRADES, null, contentValues);
+            return result != -1;
+        } catch (Exception e) {
+            Log.e("DBHelper", "Error inserting grade: " + e.getMessage(), e);
+            return false;
+        }
+    } else {
+        // Existing record was updated
+        return true;
     }
+}
+
+
 }

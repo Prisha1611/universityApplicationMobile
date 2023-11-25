@@ -21,15 +21,23 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:paddingEnd="16dp"/>
-
+    <!-- Assuming you already have TextViews for courseName and studentId -->
     <EditText
         android:id="@+id/courseGradeEditText"
-        android:layout_width="80dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Grade"
-        android:inputType="numberDecimal"
-        android:textAlignment="center"
-        android:background="@drawable/edittext_background" />
+        android:hint="Enter grade"
+        android:inputType="text" />
+
+
+    <!--    <EditText-->
+<!--        android:id="@+id/courseGradeEditText"-->
+<!--        android:layout_width="80dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Grade"-->
+<!--        android:inputType="numberDecimal"-->
+<!--        android:textAlignment="center"-->
+<!--        android:background="@drawable/edittext_background" />-->
 
 <!--    <Button-->
 <!--        android:id="@+id/addGradeButton"-->
