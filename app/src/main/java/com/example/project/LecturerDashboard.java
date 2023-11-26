@@ -25,7 +25,13 @@ public class LecturerDashboard extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        buttonReport1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), Report.class);
+                startActivity(intent);
+            }
+        });
 
         buttonLogout.setOnClickListener(new View.OnClickListener() {
             @Override

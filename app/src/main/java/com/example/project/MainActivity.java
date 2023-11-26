@@ -32,25 +32,47 @@ public class MainActivity extends AppCompatActivity {
         passwordEditText = findViewById(R.id.passwordEditText);
 
         // Set onClick listener for student login
+//        studentloginButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                String usernameStr = usernameEditText.getText().toString();
+//                int username = Integer.parseInt(usernameStr);
+//                String password = passwordEditText.getText().toString().trim();
+//
+//                boolean isValidUser = dbHelper.checkUserCredentials(username, password);
+//                if (isValidUser) {
+//                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+//                    Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+//                    startActivity(intent);
+//
+//                    // Optionally, navigate to main app screen
+//                } else {
+//                    Toast.makeText(MainActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
         studentloginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String usernameStr = usernameEditText.getText().toString();
-                int username = Integer.parseInt(usernameStr);
-                String password = passwordEditText.getText().toString().trim();
+                try {
+                    String usernameStr = usernameEditText.getText().toString().trim();
+                    int studentId = Integer.parseInt(usernameStr); // Assuming the username is the student ID
+                    String password = passwordEditText.getText().toString().trim();
 
-                boolean isValidUser = dbHelper.checkUserCredentials(username, password);
-                if (isValidUser) {
-                    Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
-                    startActivity(intent);
-
-                    // Optionally, navigate to main app screen
-                } else {
-                    Toast.makeText(MainActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                    boolean isValidUser = dbHelper.checkUserCredentials(studentId, password);
+                    if (isValidUser) {
+                        Toast.makeText(MainActivity.this, "Login successful", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(getApplicationContext(), MainActivity2.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(MainActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (NumberFormatException e) {
+                    Toast.makeText(MainActivity.this, "Invalid student ID format", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
         lecturerloginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

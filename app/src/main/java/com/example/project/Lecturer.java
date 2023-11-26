@@ -1,5 +1,6 @@
 package com.example.project;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -17,7 +18,7 @@ public class Lecturer extends AppCompatActivity {
     private RecyclerView recyclerView;
     private CourseAdapter courseAdapter;
 
-    Button addGradeButton;
+    Button addGradeButton, logoutbtn2;
     private DBHelper dbHelper; // Assuming DBHelper is your custom class for database handling
 
     @Override
@@ -25,12 +26,13 @@ public class Lecturer extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecturer);
         addGradeButton = findViewById(R.id.addGradeButton);
+        logoutbtn2 = findViewById(R.id.logoutbtn2);
 //        TextView studentIdTextView = findViewById(R.id.studentIdTextView);
 //        studentIdTextView.setText(studentId);
 
         dbHelper = new DBHelper(this);
-//        List<StudentCourse> studentCourses = dbHelper.getStudentCourses(662733);
-        List<StudentCourse> studentCourses = dbHelper.getStudentCourses(662734);
+        List<StudentCourse> studentCourses = dbHelper.getStudentCourses(662733);
+//        List<StudentCourse> studentCourses = dbHelper.getStudentCourses(662734);
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -41,6 +43,13 @@ public class Lecturer extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 addGradesToDatabase();
+            }
+        });
+        logoutbtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), LecturerDashboard.class);
+                startActivity(intent);
             }
         });
 

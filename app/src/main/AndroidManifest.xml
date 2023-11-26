@@ -13,6 +13,9 @@
         android:theme="@style/Theme.Project"
         tools:targetApi="34">
         <activity
+            android:name=".Report"
+            android:exported="false" />
+        <activity
             android:name=".LecturerDashboard"
             android:exported="false" />
         <activity
