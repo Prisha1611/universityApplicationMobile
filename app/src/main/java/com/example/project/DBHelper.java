@@ -172,37 +172,4 @@ public class DBHelper extends SQLiteOpenHelper {
         return rowsAffected > 0;
     }
 
-//    public boolean deleteGrade(int studentId, String courseName) {
-//        SQLiteDatabase db = this.getWritableDatabase();
-//
-//        String whereClause = "studentId = ? AND courseName = ?";
-//        String[] whereArgs = {String.valueOf(studentId), courseName};
-//
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GRADES + " WHERE studentId = ? AND courseName = ?", whereArgs);
-//
-//        if (cursor.getCount() > 0) {
-//            long result = db.delete(TABLE_GRADES, whereClause, whereArgs);
-//            cursor.close();
-//            db.close();
-//            return result != -1;
-//        } else {
-//            cursor.close();
-//            db.close();
-//            return false;
-//        }
-//    }
-
-    public boolean deleteGrade(int studentId, String courseName) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        String whereClause = "studentId = ? AND courseName = ?";
-        String[] whereArgs = {String.valueOf(studentId), courseName};
-
-        int deletedRows = db.delete(TABLE_GRADES, whereClause, whereArgs);
-        db.close();
-
-        return deletedRows > 0;
-    }
-
-
 }
