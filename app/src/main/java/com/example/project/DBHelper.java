@@ -16,7 +16,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_GRADES = "Grades"; // New table for grades
 
     public DBHelper(Context context) {
-        super(context, "Userdata.db", null, 1);
+        super(context, "Userdata1.db", null, 1);
     }
 
     @Override
@@ -116,7 +116,7 @@ public class DBHelper extends SQLiteOpenHelper {
         return studentCourses;
     }
 
-//    public boolean insertGrade(int studentId, String courseName, String grade) {
+    //    public boolean insertGrade(int studentId, String courseName, String grade) {
 //        SQLiteDatabase db = this.getWritableDatabase();
 //        ContentValues contentValues = new ContentValues();
 //        contentValues.put("studentId", studentId);
@@ -132,31 +132,77 @@ public class DBHelper extends SQLiteOpenHelper {
 //            db.close();
 //        }
 //    }
-public boolean insertOrUpdateGrade(int studentId, String courseName, String grade) {
-    SQLiteDatabase db = this.getWritableDatabase();
-    ContentValues contentValues = new ContentValues();
-    contentValues.put("studentId", studentId);
-    contentValues.put("courseName", courseName);
-    contentValues.put("grade", grade);
+    public boolean insertOrUpdateGrade(int studentId, String courseName, String grade) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("studentId", studentId);
+        contentValues.put("courseName", courseName);
+        contentValues.put("grade", grade);
 
-    String whereClause = "studentId = ? AND courseName = ?";
-    String[] whereArgs = new String[] { String.valueOf(studentId), courseName };
+        String whereClause = "studentId = ? AND courseName = ?";
+        String[] whereArgs = new String[]{String.valueOf(studentId), courseName};
 
-    int updatedRows = db.update(TABLE_GRADES, contentValues, whereClause, whereArgs);
-    if (updatedRows == 0) {
-        // No existing record, so insert a new one
-        try {
-            long result = db.insertOrThrow(TABLE_GRADES, null, contentValues);
-            return result != -1;
-        } catch (Exception e) {
-            Log.e("DBHelper", "Error inserting grade: " + e.getMessage(), e);
-            return false;
+        int updatedRows = db.update(TABLE_GRADES, contentValues, whereClause, whereArgs);
+        if (updatedRows == 0) {
+            // No existing record, so insert a new one
+            try {
+                long result = db.insertOrThrow(TABLE_GRADES, null, contentValues);
+                return result != -1;
+            } catch (Exception e) {
+                Log.e("DBHelper", "Error inserting grade: " + e.getMessage(), e);
+                return false;
+            }
+        } else {
+            // Existing record was updated
+            return true;
         }
-    } else {
-        // Existing record was updated
-        return true;
     }
-}
+
+    public boolean updateGrade(int studentId, String courseName, String newGrade) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("grade", newGrade);
+
+        String whereClause = "studentId = ? AND courseName = ?";
+        String[] whereArgs = {String.valueOf(studentId), courseName};
+
+        int rowsAffected = db.update(TABLE_GRADES, values, whereClause, whereArgs);
+        db.close();
+
+        return rowsAffected > 0;
+    }
+
+//    public boolean deleteGrade(int studentId, String courseName) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//
+//        String whereClause = "studentId = ? AND courseName = ?";
+//        String[] whereArgs = {String.valueOf(studentId), courseName};
+//
+//        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GRADES + " WHERE studentId = ? AND courseName = ?", whereArgs);
+//
+//        if (cursor.getCount() > 0) {
+//            long result = db.delete(TABLE_GRADES, whereClause, whereArgs);
+//            cursor.close();
+//            db.close();
+//            return result != -1;
+//        } else {
+//            cursor.close();
+//            db.close();
+//            return false;
+//        }
+//    }
+
+    public boolean deleteGrade(int studentId, String courseName) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String whereClause = "studentId = ? AND courseName = ?";
+        String[] whereArgs = {String.valueOf(studentId), courseName};
+
+        int deletedRows = db.delete(TABLE_GRADES, whereClause, whereArgs);
+        db.close();
+
+        return deletedRows > 0;
+    }
 
 
 }
